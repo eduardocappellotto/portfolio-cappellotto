@@ -1,10 +1,16 @@
 ---
 import CircularPhoto from "./CircularPhoto.astro";
+
+export interface Props {
+    profilePhotoUrl: string;
+}
+
+const { profilePhotoUrl } = Astro.props;
 ---
 
 <div class="header">
     <h1>Eduardo <span class="text-gradient">Cappellotto</span></h1>
-    <CircularPhoto />
+    <CircularPhoto profilePhotoUrl={profilePhotoUrl} />
 </div>
 <style>
     .header {

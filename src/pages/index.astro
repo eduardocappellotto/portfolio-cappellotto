@@ -37,14 +37,14 @@ await fetch(
 			(item) => item.properties.type.select.name === "BLOGPOST"
 		);
 
-		PhotoURL = requestPayload?.filter(
-			(item) => item.properties.type.select.name === "BLOGPOST"
-		);
-		console.log(blogPostsPayload);
-
 		AboutMeText = requestPayload?.filter(
 			(item) =>
 				item.properties.title.title[0].text.content === "ABOUT_TEXT"
+		)[0].properties.value.rich_text[0].text.content;
+
+		PhotoURL = requestPayload?.filter(
+			(item) =>
+				item.properties.title.title[0].text.content === "PHOTO_URL"
 		)[0].properties.value.rich_text[0].text.content;
 	})
 	.catch((error) => console.log("error", error));
@@ -52,10 +52,10 @@ await fetch(
 
 <Layout title="Eduardo Cappellotto">
 	<main>
-		<Header />
+		<Header profilePhotoUrl={PhotoURL} />
 
-		<p set:html={AboutMeText} class="instructions" />
-		{requestPayload[0]}
+		<h3><code>Tech Stack</code></h3>
+
 		<section role="list">
 			<TechStack
 				icons={[
@@ -68,18 +68,27 @@ await fetch(
 			/>
 		</section>
 
-		<section>
-			{blogPostsPayload}
-		</section>
+		<h3><code>About me</code></h3>
+		<p set:html={AboutMeText} class="instructions" />
+
+		<h3><code>Blog Posts</code></h3>
+
+		{
+			blogPostsPayload.map((tag) => (
+				<Card
+					href={tag.properties.link.rich_text[0].text.content}
+					title={tag.properties.title.title[0].text.content}
+					text={tag.properties.description.rich_text[0].text.content}
+					imgUrl={tag.properties.thumbnail.files[0].name}
+					tags={tag.properties.tags.multi_select}
+				/>
+			))
+		}
+
 		<section>
 			<div>Github Projects and its description</div>
 		</section>
 
-		<Card
-			href="https://docs.astro.build/"
-			title="Documentation"
-			body="Learn how Astro works and explore the official API docs."
-		/>
 		<div>Contact me</div>
 	</main>
 	<Footer />
@@ -95,6 +104,10 @@ await fetch(
 		font-size: 3rem;
 		font-weight: 800;
 		margin: 0;
+	}
+
+	h3 {
+		text-align: center;
 	}
 
 	.text-gradient {

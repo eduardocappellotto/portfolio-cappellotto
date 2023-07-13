@@ -1,8 +1,11 @@
 ---
 import Image from "./Image.astro";
 
-const profilePhotoUrl =
-    "https://media.licdn.com/dms/image/D4D03AQE_7j22GVeZUg/profile-displayphoto-shrink_200_200/0/1664902432011?e=1694649600&v=beta&t=_IDvNrhHySSl8t48WaKmXVzS_efLa8y5G6HTuogJ-LM";
+export interface Props {
+    profilePhotoUrl: string;
+}
+
+const { profilePhotoUrl } = Astro.props;
 ---
 
 <div class="circular-photo">
