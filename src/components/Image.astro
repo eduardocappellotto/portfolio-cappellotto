@@ -1,0 +1,17 @@
+---
+export interface Props {
+    altText: string;
+    imageUrl: string;
+    circular: boolean;
+}
+
+const { imageUrl, altText, circular } = Astro.props;
+---
+
+<img src={imageUrl} alt={altText} class:list={circular ? "circular" : ""} />
+<style>
+    img.circular {
+        border-radius: 50%;
+        height: 8rem;
+    }
+</style>

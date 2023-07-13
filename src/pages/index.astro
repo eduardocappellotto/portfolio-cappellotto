@@ -1,51 +1,102 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import Card from '../components/Card.astro';
+import Layout from "../layouts/Layout.astro";
+import Card from "../components/Card.astro";
+import Footer from "../components/Footer.astro";
+import Header from "../components/Header.astro";
+import TechStack from "../components/TechStack.astro";
+
+var myHeaders = new Headers();
+myHeaders.append("Notion-Version", "2021-05-13");
+myHeaders.append(
+	"Authorization",
+	`Bearer ${import.meta.env.PUBLIC_NOTION_API_KEY}`
+);
+
+let requestOptions: RequestInit = {
+	method: "POST",
+	headers: myHeaders,
+	redirect: "follow",
+};
+
+let requestPayload: any[] = [];
+let blogPostsPayload: any[] = [];
+let AboutMeText: String = "",
+	PhotoURL: String = "";
+
+await fetch(
+	`https://api.notion.com/v1/databases/${
+		import.meta.env.PUBLIC_DATABASE_ID
+	}/query`,
+	requestOptions
+)
+	.then((response) => response.json()) // remove '.results' from this line
+	.then((data) => {
+		requestPayload = data.results; // access 'results' property here
+
+		blogPostsPayload = requestPayload?.filter(
+			(item) => item.properties.type.select.name === "BLOGPOST"
+		);
+
+		PhotoURL = requestPayload?.filter(
+			(item) => item.properties.type.select.name === "BLOGPOST"
+		);
+		console.log(blogPostsPayload);
+
+		AboutMeText = requestPayload?.filter(
+			(item) =>
+				item.properties.title.title[0].text.content === "ABOUT_TEXT"
+		)[0].properties.value.rich_text[0].text.content;
+	})
+	.catch((error) => console.log("error", error));
 ---
 
-<Layout title="Welcome to Astro.">
+<Layout title="Eduardo Cappellotto">
 	<main>
-		<h1>Welcome to <span class="text-gradient">Astro</span></h1>
-		<p class="instructions">
-			To get started, open the directory <code>src/pages</code> in your project.<br />
-			<strong>Code Challenge:</strong> Tweak the "Welcome to Astro" message above.
-		</p>
-		<ul role="list" class="link-card-grid">
-			<Card
-				href="https://docs.astro.build/"
-				title="Documentation"
-				body="Learn how Astro works and explore the official API docs."
+		<Header />
+
+		<p set:html={AboutMeText} class="instructions" />
+		{requestPayload[0]}
+		<section role="list">
+			<TechStack
+				icons={[
+					"teenyicons:vue-solid",
+					"cib:typescript",
+					"teenyicons:nodejs-solid",
+					"mdi:aws",
+					"codicon:azure-devops",
+				]}
 			/>
-			<Card
-				href="https://astro.build/integrations/"
-				title="Integrations"
-				body="Supercharge your project with new frameworks and libraries."
-			/>
-			<Card
-				href="https://astro.build/themes/"
-				title="Themes"
-				body="Explore a galaxy of community-built starter themes."
-			/>
-			<Card
-				href="https://astro.build/chat/"
-				title="Community"
-				body="Come say hi to our amazing Discord community. ❤️"
-			/>
-		</ul>
+		</section>
+
+		<section>
+			{blogPostsPayload}
+		</section>
+		<section>
+			<div>Github Projects and its description</div>
+		</section>
+
+		<Card
+			href="https://docs.astro.build/"
+			title="Documentation"
+			body="Learn how Astro works and explore the official API docs."
+		/>
+		<div>Contact me</div>
 	</main>
+	<Footer />
 </Layout>
 
 <style>
 	main {
 		margin: auto;
 		padding: 1.5rem;
-		max-width: 60ch;
+		max-width: 60vw;
 	}
 	h1 {
 		font-size: 3rem;
 		font-weight: 800;
 		margin: 0;
 	}
+
 	.text-gradient {
 		background-image: var(--accent-gradient);
 		-webkit-background-clip: text;
@@ -61,6 +112,16 @@ import Card from '../components/Card.astro';
 		padding: 1rem;
 		border-radius: 0.4rem;
 	}
+
+	code {
+		font-size: 0.875em;
+		font-weight: bold;
+		background: rgba(var(--accent), 12%);
+		color: rgb(var(--accent));
+		border-radius: 4px;
+		padding: 0.3em 0.45em;
+	}
+
 	.instructions code {
 		font-size: 0.875em;
 		font-weight: bold;
@@ -71,11 +132,5 @@ import Card from '../components/Card.astro';
 	}
 	.instructions strong {
 		color: rgb(var(--accent));
-	}
-	.link-card-grid {
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(24ch, 1fr));
-		gap: 1rem;
-		padding: 0;
 	}
 </style>
