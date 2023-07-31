@@ -28,12 +28,6 @@ let AboutMeText: string = "",
   CareerSummary: string =
     "Software developer with a proven track record since 2018, professionally engaged in the field since late 2019. Experienced in full-stack development from coding to deploy, the whole DevOps culture. Skilled in building and maintaining systems for various industries, from startups to established companies. Proficient in developing Design Systems, implementing microservices architectures, and ensuring seamless communication within applications. Always seeking new challenges in software development.";
 
-console.log(
-  `https://api.notion.com/v1/databases/${
-    import.meta.env.PUBLIC_DATABASE_ID
-  }/query`
-);
-
 await fetch(
   `https://api.notion.com/v1/databases/${
     import.meta.env.PUBLIC_DATABASE_ID
