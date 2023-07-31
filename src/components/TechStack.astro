@@ -1,38 +1,39 @@
 ---
 export interface Props {
-    icons: string[];
+  icons: string[];
 }
 //let { icons } = Astro.props;
 
 let icons = [
-    "teenyicons:vue-solid",
-    "cib:typescript",
-    "teenyicons:nodejs-solid",
-    "mdi:aws",
-    "codicon:azure-devops",
-    "teenyicons:nextjs-outline",
+  "teenyicons:vue-solid",
+  "cib:typescript",
+  "teenyicons:nodejs-solid",
+  "mdi:aws",
+  "codicon:azure-devops",
+  "teenyicons:nextjs-outline",
 ];
 ---
 
 <script
-    is:inline
-    src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"
+  is:inline
+  src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"
 ></script>
 
 <div class="icons-list">
-    {icons.map((icon) => <iconify-icon icon={icon} alt={"Icon of: " + icon} />)}
+  {icons.map((icon) => <iconify-icon icon={icon} alt={"Icon of: " + icon} />)}
 </div>
 
 <style>
-    .icons-list {
-        font-size: 2.5rem;
+  .icons-list {
+    font-size: 2.5rem;
 
-        width: 100%;
-        display: flex;
-        justify-content: center;
-    }
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
 
-    iconify-icon {
-        margin: 0px 1rem;
-    }
+  iconify-icon {
+    margin: 0px 1rem;
+  }
 </style>

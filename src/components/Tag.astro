@@ -1,0 +1,28 @@
+---
+export interface Props {
+  id: string;
+  color: string;
+  name: string;
+}
+
+const { id, color, name } = Astro.props;
+---
+
+<span class="tag">
+  {name}
+</span>
+
+<style>
+  .tag {
+    padding: 2px 3px;
+    border-radius: 0.5rem;
+    color: rgb(var(--accent));
+
+    background-color: rgba(var(--accent), 12%);
+
+    border: 1px solid black;
+
+    font-size: 12px;
+    font-weight: bold;
+  }
+</style>

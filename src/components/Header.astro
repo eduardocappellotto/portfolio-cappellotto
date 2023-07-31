@@ -2,32 +2,32 @@
 import CircularPhoto from "./CircularPhoto.astro";
 
 export interface Props {
-    profilePhotoUrl: string;
+  profilePhotoUrl: string;
 }
 
 const { profilePhotoUrl } = Astro.props;
 ---
 
 <div class="header">
-    <h1>Eduardo <span class="text-gradient">Cappellotto</span></h1>
-    <CircularPhoto profilePhotoUrl={profilePhotoUrl} />
+  <h1>Eduardo <span class="text-gradient">Cappellotto</span></h1>
+  <CircularPhoto profilePhotoUrl={profilePhotoUrl} />
 </div>
 <style>
-    .header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-    h1 {
-        font-size: 3rem;
-        font-weight: 800;
-        margin: 0;
-    }
-    .text-gradient {
-        background-image: var(--accent-gradient);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-size: 400%;
-        background-position: 0%;
-    }
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  h1 {
+    font-size: 2rem;
+    font-weight: 800;
+    margin: 0;
+  }
+  .text-gradient {
+    background-image: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-size: 400%;
+    background-position: 0%;
+  }
 </style>

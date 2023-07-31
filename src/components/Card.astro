@@ -1,84 +1,103 @@
 ---
+import Tag from "./Tag.astro";
+
 export interface Props {
-	title: string;
-	text: string;
-	href: string;
-	tags: tag[];
-	imgUrl: string;
+  title: string;
+  text: string;
+  href: string;
+  tags: Tag[];
+  imgUrl: string;
 }
 
-interface tag {
-	id: string;
-	color: string;
-	name: string;
+interface Tag {
+  id: string;
+  color: string;
+  name: string;
 }
 
 const { title, text, imgUrl, href, tags } = Astro.props;
 ---
 
 <section class="link-card">
-	<div class="card-image">
-		<img src={imgUrl} alt={title} />
-	</div>
-	<div class="card-content">
-		<h2>{title}</h2>
-		<p>{text}</p>
-		<br />
-		<a href={href} class="card-link"><span>Ler Mais &rarr;</span></a>
-	</div>
+  <div class="card-image">
+    <img src={imgUrl} alt={title} />
+  </div>
+  <div class="card-content">
+    <h2>{title}</h2>
+    <p>{text}</p>
+    <div class="tags">
+      {tags.map((tag) => <Tag {...tag} />)}
+    </div>
+    <a href={href} class="card-link"><span>Read More &rarr;</span></a>
+  </div>
 </section>
 <style>
-	.link-card {
-		margin: 1rem 0px;
-		list-style: none;
-		display: flex;
-		padding: 0.25rem;
-		background-color: white;
-		background-image: none;
-		background-size: 400%;
-		border-radius: 0.6rem;
-		background-position: 100%;
-		transition: background-position 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-		box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
-			0 2px 4px -2px rgba(0, 0, 0, 0.1);
-	}
+  .link-card {
+    margin: 1rem 0.5rem;
+    width: min-content;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
 
-	.card-content {
-		padding: 4px 16px;
-	}
+    padding: 0.25rem;
+    background-color: white;
+    background-image: none;
 
-	.link-card > a,
-	.card-content > a {
-		width: 100%;
-		text-decoration: none;
-		line-height: 1.4;
-		text-align: end;
-		font-weight: bold;
-		display: block;
-	}
-	h2 {
-		margin: 0;
-		font-size: 1.25rem;
-		transition: color 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-	}
+    border-radius: 0.6rem;
+    background-position: 100%;
+    transition: background-position 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+      0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  }
 
-	img {
-		width: 24rem;
-		border-radius: 6px;
-	}
-	p {
-		margin-top: 0.5rem;
-		margin-bottom: 0;
-		color: #444;
-	}
-	.link-card:is(:hover, :focus-within) {
-		background-position: 0;
-		border-color: var(--accent-gradient);
-		opacity: 0.9;
-		cursor: pointer;
-	}
-	.link-card:is(:hover, :focus-within) h2 {
-		color: rgb(var(--accent));
-		border-color: var(--accent-gradient);
-	}
+  .card-image {
+    overflow: hidden;
+  }
+
+  .card-content {
+    padding: 4px 16px;
+  }
+
+  .link-card > a,
+  .card-content > a {
+    width: 100%;
+    text-decoration: none;
+    line-height: 1.4;
+    text-align: end;
+    font-weight: bold;
+    display: block;
+  }
+  h2 {
+    margin: 0;
+    font-size: 1.25rem;
+    transition: color 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  img {
+    width: 24rem;
+    border-radius: 6px;
+  }
+  p {
+    margin-top: 0.5rem;
+    margin-bottom: 0;
+    color: #444;
+  }
+  .link-card:is(:hover, :focus-within) {
+    background-position: 0;
+    border-color: var(--accent-gradient);
+    opacity: 0.9;
+    cursor: pointer;
+  }
+  .link-card:is(:hover, :focus-within) h2 {
+    color: rgb(var(--accent));
+    border-color: var(--accent-gradient);
+  }
+
+  .tags {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin: 1rem 0rem;
+  }
 </style>

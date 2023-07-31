@@ -4,146 +4,201 @@ import Card from "../components/Card.astro";
 import Footer from "../components/Footer.astro";
 import Header from "../components/Header.astro";
 import TechStack from "../components/TechStack.astro";
+import JobExperienceTimeline from "../components/JobExperienceTimeline.astro";
 
 var myHeaders = new Headers();
 myHeaders.append("Notion-Version", "2021-05-13");
 myHeaders.append(
-	"Authorization",
-	`Bearer ${import.meta.env.PUBLIC_NOTION_API_KEY}`
+  "Authorization",
+  `Bearer ${import.meta.env.PUBLIC_NOTION_API_KEY}`
 );
 
 let requestOptions: RequestInit = {
-	method: "POST",
-	headers: myHeaders,
-	redirect: "follow",
+  method: "POST",
+  headers: myHeaders,
+  redirect: "follow",
 };
 
 let requestPayload: any[] = [];
 let blogPostsPayload: any[] = [];
-let AboutMeText: String = "",
-	PhotoURL: String = "";
+let personalProjectsPayload: any[] = [];
+
+let AboutMeText: string = "",
+  PhotoURL: string = "",
+  CareerSummary: string =
+    "Software developer with a proven track record since 2018, professionally engaged in the field since late 2019. Experienced in full-stack development from coding to deploy, the whole DevOps culture. Skilled in building and maintaining systems for various industries, from startups to established companies. Proficient in developing Design Systems, implementing microservices architectures, and ensuring seamless communication within applications. Always seeking new challenges in software development.";
+
+console.log(
+  `https://api.notion.com/v1/databases/${
+    import.meta.env.PUBLIC_DATABASE_ID
+  }/query`
+);
 
 await fetch(
-	`https://api.notion.com/v1/databases/${
-		import.meta.env.PUBLIC_DATABASE_ID
-	}/query`,
-	requestOptions
+  `https://api.notion.com/v1/databases/${
+    import.meta.env.PUBLIC_DATABASE_ID
+  }/query`,
+  requestOptions
 )
-	.then((response) => response.json()) // remove '.results' from this line
-	.then((data) => {
-		requestPayload = data.results; // access 'results' property here
+  .then((response) => response.json())
+  .then((data) => {
+    requestPayload = data.results; // access 'results' property here
 
-		blogPostsPayload = requestPayload?.filter(
-			(item) => item.properties.type.select.name === "BLOGPOST"
-		);
+    blogPostsPayload = requestPayload?.filter(
+      (item) => item.properties?.type?.select?.name === "BLOGPOST"
+    );
 
-		AboutMeText = requestPayload?.filter(
-			(item) =>
-				item.properties.title.title[0].text.content === "ABOUT_TEXT"
-		)[0].properties.value.rich_text[0].text.content;
+    personalProjectsPayload = requestPayload?.filter(
+      (item) => item.properties?.type?.select?.name === "GITHUBPROJECT"
+    );
 
-		PhotoURL = requestPayload?.filter(
-			(item) =>
-				item.properties.title.title[0].text.content === "PHOTO_URL"
-		)[0].properties.value.rich_text[0].text.content;
-	})
-	.catch((error) => console.log("error", error));
+    AboutMeText = requestPayload?.filter(
+      (item) => item.properties.title.title[0].text.content === "ABOUT_TEXT"
+    )[0].properties.value.rich_text[0].text.content;
+
+    PhotoURL = requestPayload?.filter(
+      (item) => item.properties.title.title[0].text.content === "PHOTO_URL"
+    )[0].properties.value.rich_text[0].text.content;
+  })
+  .catch((error) => console.log("error", error));
 ---
 
 <Layout title="Eduardo Cappellotto">
-	<main>
-		<Header profilePhotoUrl={PhotoURL} />
+  <main>
+    <Header profilePhotoUrl={PhotoURL} />
 
-		<h3><code>Tech Stack</code></h3>
+    <h3><code>Tech Stack</code></h3>
 
-		<section role="list">
-			<TechStack
-				icons={[
-					"teenyicons:vue-solid",
-					"cib:typescript",
-					"teenyicons:nodejs-solid",
-					"mdi:aws",
-					"codicon:azure-devops",
-				]}
-			/>
-		</section>
+    <section role="list">
+      <TechStack
+        icons={[
+          "teenyicons:vue-solid",
+          "cib:typescript",
+          "teenyicons:nodejs-solid",
+          "mdi:aws",
+          "codicon:azure-devops",
+        ]}
+      />
+    </section>
 
-		<h3><code>About me</code></h3>
-		<p set:html={AboutMeText} class="instructions" />
+    <h3><code>Career Summary</code></h3>
+    <p set:html={CareerSummary} class="instructions" />
 
-		<h3><code>Blog Posts</code></h3>
+    <h3><code>Blog Posts</code></h3>
 
-		{
-			blogPostsPayload.map((tag) => (
-				<Card
-					href={tag.properties.link.rich_text[0].text.content}
-					title={tag.properties.title.title[0].text.content}
-					text={tag.properties.description.rich_text[0].text.content}
-					imgUrl={tag.properties.thumbnail.files[0].name}
-					tags={tag.properties.tags.multi_select}
-				/>
-			))
-		}
+    <div class="posts-grid">
+      {
+        blogPostsPayload.map((tag) => (
+          <Card
+            href={tag.properties.link.rich_text[0].text.content}
+            title={tag.properties.title.title[0].text.content}
+            text={tag.properties.description.rich_text[0].text.content}
+            imgUrl={tag.properties.thumbnail.files[0].name}
+            tags={tag.properties.tags.multi_select}
+          />
+        ))
+      }
+    </div>
 
-		<section>
-			<div>Github Projects and its description</div>
-		</section>
+    <h3>
+      <code>GitHub Projects</code>
+    </h3>
 
-		<div>Contact me</div>
-	</main>
-	<Footer />
+    <div class="github-grid">
+      {
+        personalProjectsPayload.map((tag) => (
+          <Card
+            href={tag.properties.link.rich_text[0].text.content}
+            title={tag.properties.title.title[0].text.content}
+            text={tag.properties.description.rich_text[0].text.content}
+            imgUrl="https://f4n3x6c5.stackpathcdn.com/article/what-is-git-github-and-github-desktop-and-create-a-git-repository-in-github-usi/Images/github.png"
+            tags={tag.properties.tags.multi_select}
+          />
+        ))
+      }
+    </div>
+
+    <h3>
+      <code>Job Experiences</code>
+    </h3>
+
+    <JobExperienceTimeline />
+  </main>
+  <Footer />
 </Layout>
 
 <style>
-	main {
-		margin: auto;
-		padding: 1.5rem;
-		max-width: 60vw;
-	}
-	h1 {
-		font-size: 3rem;
-		font-weight: 800;
-		margin: 0;
-	}
+  main {
+    margin: auto;
+    padding: 1.5rem;
+    max-width: 90%; /* default to 90%, good for mobile */
+  }
 
-	h3 {
-		text-align: center;
-	}
+  /* This will apply if the viewing area is greater than 600px */
+  @media screen and (min-width: 600px) {
+    main {
+      max-width: 80%; /* slightly larger screens use 80% width */
+    }
+  }
 
-	.text-gradient {
-		background-image: var(--accent-gradient);
-		-webkit-background-clip: text;
-		-webkit-text-fill-color: transparent;
-		background-size: 400%;
-		background-position: 0%;
-	}
-	.instructions {
-		line-height: 1.6;
-		margin: 1rem 0;
-		border: 1px solid rgba(var(--accent), 25%);
-		background-color: white;
-		padding: 1rem;
-		border-radius: 0.4rem;
-	}
+  /* This will apply if the viewing area is greater than 900px */
+  @media screen and (min-width: 900px) {
+    main {
+      max-width: 70%; /* very large screens use 60% width */
+    }
+  }
 
-	code {
-		font-size: 0.875em;
-		font-weight: bold;
-		background: rgba(var(--accent), 12%);
-		color: rgb(var(--accent));
-		border-radius: 4px;
-		padding: 0.3em 0.45em;
-	}
+  h1 {
+    font-size: 3rem;
+    font-weight: 800;
+    margin: 0;
+  }
 
-	.instructions code {
-		font-size: 0.875em;
-		font-weight: bold;
-		background: rgba(var(--accent), 12%);
-		color: rgb(var(--accent));
-		border-radius: 4px;
-		padding: 0.3em 0.45em;
-	}
-	.instructions strong {
-		color: rgb(var(--accent));
-	}
+  h3 {
+    text-align: center;
+  }
+
+  .posts-grid,
+  .github-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .text-gradient {
+    background-image: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-size: 400%;
+    background-position: 0%;
+  }
+  .instructions {
+    line-height: 1.6;
+    margin: 1rem 0;
+    border: 1px solid rgba(var(--accent), 25%);
+    background-color: white;
+    padding: 1rem;
+    border-radius: 0.4rem;
+  }
+
+  code {
+    font-size: 0.875em;
+    font-weight: bold;
+    background: rgba(var(--accent), 12%);
+    color: rgb(var(--accent));
+    border-radius: 4px;
+    padding: 0.3em 0.45em;
+  }
+
+  .instructions code {
+    font-size: 0.875em;
+    font-weight: bold;
+    background: rgba(var(--accent), 12%);
+    color: rgb(var(--accent));
+    border-radius: 4px;
+    padding: 0.3em 0.45em;
+  }
+  .instructions strong {
+    color: rgb(var(--accent));
+  }
 </style>
